@@ -25,9 +25,11 @@ jobs:
         run: |
           echo "Iniciando el servidor para pruebas..."
           node server.js &
-          sleep 5  # Espera para que el servidor se inicie correctamente
-          curl http://localhost:3000  # Cambié el puerto a 3000
+          sleep 5  
+          curl http://localhost:3000  
 
       - name: Finalizar el workflow
         run: echo "El workflow ha terminado con éxito"
+      - name: Dime la fecha
+        run: date
 
