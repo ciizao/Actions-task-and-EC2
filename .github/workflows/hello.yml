@@ -10,30 +10,24 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-
       - name: Checkout code
         uses: actions/checkout@v3
-
 
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: 18 
-
+          node-version: 18
 
       - name: Install dependencies
         run: npm install
-
-
-      - name: Dime la fecha
-        run: date
 
       - name: Start server
         run: |
           echo "Iniciando el servidor para pruebas..."
           node server.js &
-          sleep 
-          curl http://localhost:1000 
+          sleep 5  # Espera para que el servidor se inicie correctamente
+          curl http://localhost:3000  # Cambié el puerto a 3000
 
       - name: Finalizar el workflow
         run: echo "El workflow ha terminado con éxito"
+
