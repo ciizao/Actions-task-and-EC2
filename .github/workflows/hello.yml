@@ -13,17 +13,21 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Deploy to EC2
-        uses: appleboy/ssh-action@v0.1.8
+      - name: Configure SSH
+        uses: webfactory/ssh-agent@v0.5.3
         with:
-          host: 54.89.241.102 
-          username: ec2-user 
-          key: ${{ secrets.EC2_SSH_KEY }} 
-          port: 22
-          script: |
-            echo "Conexión a la instancia EC2 exitosa."
-            cd ~/Actions-task-and-EC2 
-            git pull origin main 
-            npm install 
-            pm2 stop all || true 
-            pm2 start server.js --
+          ssh-private-key: ${{ secrets.EC2_SSH_KEY }}
+
+      - name: Deploy to EC2
+        run: |
+          echo "Conectándose a la instancia de EC2..."
+          ssh -o StrictHostKeyChecking=no ec2-user@54.89.241.102 << 'EOF'
+          echo "Actualizando el servidor..."
+          pkill node || true
+          cd ~/Actions-task-and-EC2 || exit
+          git pull origin main
+          npm install
+          nohup node server.js > output.log 2>&1 &
+          echo "Servidor reiniciado correctamente."
+          EOF
+
